@@ -1162,6 +1162,10 @@ local function user_forced_no_autojump_3f()
 end
 local function get_targetable_windows(reverse_3f, omni_3f)
   local curr_win_id = vim.fn.win_getid()
+  -- another workaround: lightspeed doesn't work well from popups
+  if curr_win_id == get_nvimtree_window() then
+    curr_win_id = vim.api.nvim_list_wins()[1]
+  end
   local _let_223_ = vim.split(vim.fn.string(vim.fn.winlayout()), tostring(curr_win_id))
   local left = _let_223_[1]
   local right = _let_223_[2]
