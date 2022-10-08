@@ -966,7 +966,8 @@ local function get_horizontal_bounds()
   local window_width = api.nvim_win_get_width(0)
   local right_edge = (left_bound + dec((window_width - textoff)))
   local right_bound = (right_edge - dec(match_width))
-  return {left_bound, right_bound}
+  -- https://github.com/ggandor/lightspeed.nvim/issues/170
+  return {left_bound, right_bound+5}
 end
 local function onscreen_match_positions(pattern, reverse_3f, _185_)
   local _arg_186_ = _185_
@@ -1204,7 +1205,14 @@ local function get_targetable_windows(reverse_3f, omni_3f)
   local function _229_(_241)
     return (vim.fn.getwininfo(_241))[1]
   end
-  return map(_229_, ids1)
+  -- my hack to include the nvim-tree floating window
+  -- in the lightspeed target windows
+  local res = map(_229_, ids1)
+  local nvimtree_win = get_nvimtree_window()
+  if nvimtree_win ~= nil then
+    table.insert(res, vim.fn.getwininfo(nvimtree_win)[1])
+  end
+  return res
 end
 local function get_onscreen_lines(_230_)
   local _arg_231_ = _230_
