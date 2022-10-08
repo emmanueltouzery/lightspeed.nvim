@@ -1163,8 +1163,10 @@ end
 local function get_targetable_windows(reverse_3f, omni_3f)
   local curr_win_id = vim.fn.win_getid()
   -- another workaround: lightspeed doesn't work well from popups
+  local popup_hack_curr_win_id = nil
   if curr_win_id == get_nvimtree_window() then
     curr_win_id = vim.api.nvim_list_wins()[1]
+    popup_hack_curr_win_id = curr_win_id
   end
   local _let_223_ = vim.split(vim.fn.string(vim.fn.winlayout()), tostring(curr_win_id))
   local left = _let_223_[1]
@@ -1215,6 +1217,12 @@ local function get_targetable_windows(reverse_3f, omni_3f)
   local nvimtree_win = get_nvimtree_window()
   if nvimtree_win ~= nil then
     table.insert(res, vim.fn.getwininfo(nvimtree_win)[1])
+  end
+  if popup_hack_curr_win_id ~= nil then
+    table.insert(res, vim.fn.getwininfo(popup_hack_curr_win_id)[1])
+    -- res = vim.tbl_filter(function(v)
+    --   return v.winnr ~= nvimtree_win
+    -- end, res)
   end
   return res
 end
